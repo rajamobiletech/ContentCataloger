@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<taglib version="2.0" xmlns="http://java.sun.com/xml/ns/j2ee"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+    xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee web-jsptaglibrary_2_0.xsd">
+
+	<tlib-version>1.0</tlib-version>
+	<short-name>ple</short-name>
+	<uri>taglib/ple</uri>
+	<info>This taglib defines the custom tag's with common implementation that can be used in jsp's of ple application</info>
+	
+	<tag>
+		<description>Prints the action message that comes as a part of response from the server</description>
+		<name>actionmessage</name>
+		<tag-class>com.cisco.ple.util.jstl.ActionMessage</tag-class>
+		<body-content>empty</body-content>
+	</tag>
+	<tag>
+		<description>Prints the error message that comes as a part of response from the server</description>
+		<name>errormessage</name>
+		<tag-class>com.cisco.ple.util.jstl.ErrorMessage</tag-class>
+		<body-content>empty</body-content>
+	</tag>
+</taglib>
