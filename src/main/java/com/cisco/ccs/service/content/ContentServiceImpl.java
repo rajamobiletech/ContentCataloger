@@ -56,7 +56,7 @@ public class ContentServiceImpl implements ContentService {
 	        		 continue;
 	        	int i = fileName.lastIndexOf('.');
 	            if (i > 0) {
-	            	mFileName = fileName.substring(0,i);
+	            	mFileName = fileName;
 	            	mFileType = fileName.substring(i+1);
 	            }
 	            double bytes = fileEntry.length();

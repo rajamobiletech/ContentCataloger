@@ -60,40 +60,6 @@
 	{
 	}
 	
-	
-	//Custom details 
-	function getCustomDetails(location) {
-		var customHTML = '<div class="ple-details-custom-description">';
-		customHTML += '<div class="ple-details-custom-failed-header">Validations</div>';
-		
-		$.each(searchResultJSON2.aaData[location].orderError,function(i){
-			
-			customHTML += '<div class="ple-details-custom-failed-block">';
-			customHTML += '<table class="ple-details-custom-failed-block-table"><col style="width: 10%;"><col style="width: 82%;"><col style="width: 8%;">';
-			
-			customHTML += '<tr>';
-			customHTML += '<td><div class="ple-details-audit-label">'+searchResultJSON2.customDetails.codeNo+'</div></td>';
-			customHTML += '<td><div class="ple-details-audit-data">'+searchResultJSON2.aaData[location].orderError[i]['codeNo']+'</div></td>';
-			customHTML += '<td><div class="ple-details-custom-failed-error">Failed</div></td>';
-			customHTML += '</tr>';
-			
-			customHTML += '<tr>';
-			customHTML += '<td><div class="ple-details-audit-label">'+searchResultJSON2.customDetails.codeName+'</div></td>';
-			customHTML += '<td><div class="ple-details-audit-data">'+searchResultJSON2.aaData[location].orderError[i]['codeName']+'</div></td>';
-			customHTML += '<td></td>';
-			customHTML += '</tr>';
-			
-			customHTML += '<tr>';
-			customHTML += '<td><div class="ple-details-audit-label">'+searchResultJSON2.customDetails.description+'</div></td>';
-			customHTML += '<td><div class="ple-details-audit-data">'+searchResultJSON2.aaData[location].orderError[i]['description']+'</div></td>';
-			customHTML += '<td></td>';
-			customHTML += '</tr>';
-			
-			customHTML += '</table></div>';
-		});
-		customHTML += '</div>';
-		return customHTML;
-	}
 
 	$(document).ready(function() {
 		
@@ -304,17 +270,17 @@
 		var isAdvanceSearchHideForUnProcessedOrders = $('#isAdvanceSearchHideForUnProcessedOrders').val();
 		if (isAdvanceSearchHideForProcessedOrders == "false") {
 			$("#ple-advancedSearch-wrapper-for-ManagementPage-1").show();
-            $("#ple-search-arrow-1").css("background-image", "url(${contextPath}/images/search-arrow-up.png)");
+            $("#ple-search-arrow-1").css("background-image", "url(${contextPath}/resources/images/search-arrow-up.png)");
         } else {
             $("#ple-advancedSearch-wrapper-for-ManagementPage-1").hide();
-            $("#ple-search-arrow-1").css("background-image", "url(${contextPath}/images/search-arrow.png)");
+            $("#ple-search-arrow-1").css("background-image", "url(${contextPath}/resources/images/search-arrow.png)");
         }
 		if (isAdvanceSearchHideForUnProcessedOrders == "false") {
             $("#ple-advancedSearch-wrapper-for-ManagementPage-2").show();
-            $("#ple-search-arrow-2").css("background-image", "url(${contextPath}/images/search-arrow-up.png)");
+            $("#ple-search-arrow-2").css("background-image", "url(${contextPath}/resources/images/search-arrow-up.png)");
         } else {
             $("#ple-advancedSearch-wrapper-for-ManagementPage-2").hide();
-            $("#ple-search-arrow-2").css("background-image", "url(${contextPath}/images/search-arrow.png)");
+            $("#ple-search-arrow-2").css("background-image", "url(${contextPath}/resources/images/search-arrow.png)");
         }
 		
 		$(".ple-search-box").focus(function(srcc)
@@ -390,60 +356,42 @@
    	    $("#ple-search-arrow-1").click(function() {
    	        if ($("#ple-advancedSearch-wrapper-for-ManagementPage-1").is(":hidden")) {
    	            $("#ple-advancedSearch-wrapper-for-ManagementPage-1").show();
-   	            $("#ple-search-arrow-1").css("background-image", "url(${contextPath}/images/search-arrow-up.png)");
+   	            $("#ple-search-arrow-1").css("background-image", "url(${contextPath}/resources/images/search-arrow-up.png)");
    	         adSearch=1;
    	      	isAdvancedSearch = true;
    	        
    	        } else {
    	            $("#ple-advancedSearch-wrapper-for-ManagementPage-1").hide();
-   	            $("#ple-search-arrow-1").css("background-image", "url(${contextPath}/images/search-arrow.png)");
+   	            $("#ple-search-arrow-1").css("background-image", "url(${contextPath}/resources/images/search-arrow.png)");
    	         adSearch=0;
    	        }
    	    });
 
    	    $("#ple-button-advancedSearch-close-1").click(function() {
    	        $("#ple-advancedSearch-wrapper-for-ManagementPage-1").hide();
-   	        $("#ple-search-arrow-1").css("background-image", "url(${contextPath}/images/search-arrow.png)");
+   	        $("#ple-search-arrow-1").css("background-image", "url(${contextPath}/resources/images/search-arrow.png)");
    	     adSearch=0;
    	    });
    	    
         $("#ple-search-arrow-2").click(function() {
             if ($("#ple-advancedSearch-wrapper-for-ManagementPage-2").is(":hidden")) {
                 $("#ple-advancedSearch-wrapper-for-ManagementPage-2").show();
-                $("#ple-search-arrow-2").css("background-image", "url(${contextPath}/images/search-arrow-up.png)");
+                $("#ple-search-arrow-2").css("background-image", "url(${contextPath}/resources/images/search-arrow-up.png)");
                 isAdvancedSearch = true;
                 adSearch=1;
             } else {
                 $("#ple-advancedSearch-wrapper-for-ManagementPage-2").hide();
-                $("#ple-search-arrow-2").css("background-image", "url(${contextPath}/images/search-arrow.png)");
+                $("#ple-search-arrow-2").css("background-image", "url(${contextPath}/resources/images/search-arrow.png)");
                 adSearch=0;
             }
         });
 
         $("#ple-button-advancedSearch-close-2").click(function() {
             $("#ple-advancedSearch-wrapper-for-ManagementPage-2").hide();
-            $("#ple-search-arrow-2").css("background-image", "url(${contextPath}/images/search-arrow.png)");
+            $("#ple-search-arrow-2").css("background-image", "url(${contextPath}/resources/images/search-arrow.png)");
             adSearch=0;
         });
         
-        $('#orderAdvSearchSubmitBtn').click(function(){
-        	isAdvancedSearch = true;
-        	processOrderAdvanceSearch(); 
-        	storeAdvProcessedField();
-        });
-        
-        $('#orderAdvSearchClearBtn').click(function(){
-        	clearProcessedAdvanceSearchFields();
-        });
-        
-        $('#unprocessedOrderAdvSearchSubmitBtn').click(function(){
-        	isAdvancedSearch = true;
-        	unprocessOrderAdvanceSearch();
-        });
-      
-        $('#unprocessedOrderAdvSearchClearBtn').click(function(){
-        	clearUnPorcessedAdvanceSearchFields();
-        });
         
         function processOrderAdvanceSearch(){
         	 programName = ($("#programName").val() == undefined || $("#programName").val() == '') ? '' : $("#programName").val().trim();
