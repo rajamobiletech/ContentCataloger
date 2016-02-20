@@ -70,9 +70,8 @@
 		var lpAccess = true;
 		
 	
-		var orderProcessedSearch="${contextPath}/ccs/getDefaultFTPSearch";
-		var defaultSearch = "${contextPath}/ccs/getDefaultFTPSearch";
-		var defaultUnprocessedSearch = "${contextPath}/ccs/defaultUnprocessedSearch"
+		var defaultFTPSearch = "${contextPath}/ccs/getDefaultFTPSearch";
+		var defaultCatalogSearch = "${contextPath}/ccs/getDefaultCatalogSearch"
 		
 	     oTable2 = $("#dataTables1").dataTable({
 		    "sPaginationType": "full_numbers",
@@ -103,13 +102,12 @@
 		 	//"bProcessing": true,
 			"bServerSide": true,
 			"bAutoWidth": false,
-			"sAjaxSource": defaultUnprocessedSearch,
+			"sAjaxSource": defaultCatalogSearch,
 			"sServerMethod": "POST", 
 			"fnServerData": function ( sSource, aoData, fnCallback ) {
 				
 				aoData.push(
-		            { "name": "programName", "value": searchText },
-		            { "name" : "orderTypeForAdvanceSearch",value:"unProcessed"}
+		            { "name": "fileName", "value": searchText }
 		        );
 				
 		        $.getJSON( sSource, aoData, function (json) { 
@@ -151,23 +149,17 @@
 		    "sDom": 't<"fg-toolbar ui-widget-header ui-corner-bl ui-corner-br ui-helper-clearfix"lip>',
 		    "aaSorting": [],		 	
 			"bServerSide": true,
-			"sAjaxSource": defaultSearch,
+			"sAjaxSource": defaultFTPSearch,
 			"sServerMethod": "POST", 
 			"fnServerData": function (sSource, aoData, fnCallback ) {
 				aoData.push(
-		            { "name": "programName", "value": searchText },
-		            { "name" : "orderTypeForAdvanceSearch",value:"processed"}
+		            { "name": "fileName", "value": searchText }
 		        );
 				var isDefault = sSource.indexOf("getDefaultOrderSearch") > -1;
 		        $.getJSON( sSource, aoData, function (json1) {
 		            fnCallback(json1);
 		            searchResultJSON1 = json1;
 		            initializeShowOrderDetails(searchResultJSON1,oTable1);
-		            if(sessionStorage.getItem("isAdvance") && !$("#ple-advancedSearch-wrapper-for-ManagementPage-1").is(":visible")){
-		            	$("#ple-search-arrow-1").trigger("click");
-		            }
-		            if(sessionStorage.getItem("isAdvance") && isDefault) clearAllSessionData();
-		            
 		        });
 		    }
 		});
@@ -225,36 +217,7 @@
 			initializeShowDetails(searchResultJSON2,oTable2);
 		});
 		
-		 $('#orderAdvSearchReturnBtn').click(function() {
-			searchResultJSON1 = null; 
-        	var order = "processed";
-        	var blankStr = "";
-        	searchText ="";
-	        var oSettings = oTable1.fnSettings() ;
-            oSettings.sAjaxSource = defaultSearch;
-            oTable1.fnDraw();
-            $("#note").html("");
-            $("label#search_order_error").text("");
-            $("label#search_order_error").show();
-            $("#ple-button-advancedSearch-close-1").trigger("click"); 
-		});
-		
- 		
-		$('#unprocessedOrderAdvSearchReturnBtn').click(function() {
-			searchResultJSON2 = null;
-			var order = "unProcessed";
-        	searchText =programName;
-        	var blankStr = "";
-	        var oSettings = oTable2.fnSettings() ;
-            oSettings.sAjaxSource = defaultUnprocessedSearch;
-            oTable2.fnDraw();
-            $("#note").html("");
-            $("label#search_unprocessed_order_error").text("");
-            $("label#search_unprocessed_order_error").show();
-            $("#ple-button-advancedSearch-close-2").trigger("click");
-		});
-		
-		
+
 		$("#btnSaveObject").click(function() {
 			if(selectedFtpID) {
 				$("#selectedFTPHiddenInputId").val(selectedFtpID);
@@ -315,17 +278,15 @@
     	    					if(selectedIndex == 1){
     	    						unprocessOrderAdvanceSearch();
 				    	    		}else{
-				    	    			processOrderAdvanceSearch();
-				    	    			storeAdvProcessedField();
+				    	    			contentFTPSearch();
 				    	    		}    			
     	       			 return false;
     	       		}
     		});
    		
-   		$("#order_submit_btn").click(function() {   			
+   		$("#ftp_search_btn").click(function() {   			
    			isAdvancedSearch = false;
-   			processOrderAdvanceSearch();
-   			storeAdvProcessedField();
+   			contentFTPSearch();
         });
    		
    		$("#unprocessed_order_submit_btn").click(function() {   			
@@ -393,47 +354,11 @@
         });
         
         
-        function processOrderAdvanceSearch(){
-        	 programName = ($("#programName").val() == undefined || $("#programName").val() == '') ? '' : $("#programName").val().trim();
-             orderNumber = ($("#orderNumber").val() == undefined || $("#orderNumber").val() == '') ? '' : $("#orderNumber").val().trim();
-             SKUID = ($("#SKUID").val() == undefined || $("#SKUID").val() == '') ? '' : $("#SKUID").val().trim();
-             orderSaleType = $("#orderSaleType").val();
-              source = $("#source").val();
-              orderLPSiteId = ($("#orderLPSiteId").val() == undefined || $("#orderLPSiteId").val() == '') ? '' : $("#orderLPSiteId").val().trim();
-              orderLPSiteName = ($("#orderLPSiteName").val() == undefined || $("#orderLPSiteName").val() == '') ? '' : $("#orderLPSiteName").val().trim();
-              deliveryLPSiteName = ($("#deliveryLPSiteName").val() == undefined || $("#deliveryLPSiteName").val() == '') ? '' : $("#deliveryLPSiteName").val().trim();
-              deliveryLPSiteId = ($("#deliveryLPSiteId").val() == undefined || $("#deliveryLPSiteId").val() == '') ? '' : $("#deliveryLPSiteId").val().trim();
-              
-              orderDateFrom = ($("#processStartDate").val() == undefined || $("#processStartDate").val() == '') ? '' : ($("#processStartDate").val().trim());
-              orderDateTo = ($("#processEndDate").val() == undefined || $("#processEndDate").val() == '') ? '' : ($("#processEndDate").val().trim());
-              
-              var searchTxt = $("input#orderSearchTxt").val();
-              if (null == searchTxt)
-                  searchTxt = "";
-              if (isAdvancedSearch == false && (searchTxt == "" || searchTxt=="Search")) {
-                  $("label#search_order_error").text('<spring:message code="Order_Search_Error_Msg" />');
-                  $("label#search_order_error").show();
-                  $("input#searchTxt").focus();
-                  return false;
-                  }else if (isAdvancedSearch == true && programName.length == 0 && orderNumber.length == 0 && SKUID.length == 0 && orderSaleType == "" && source == "" && orderLPSiteId.length == 0  && orderLPSiteName.length == 0 && deliveryLPSiteName.length == 0 && deliveryLPSiteId.length == 0 && orderDateFrom.length==0 && orderDateTo.length==0) {
-	                $("label#search_order_error").text('<spring:message code="Advance_Search_Error_Msg" />');
-	                $("label#search_order_error").show();
-	                return false;
-	              } else if(orderDateFrom.length==0 && orderDateTo.length > 0) {
-	            	  $("label#search_order_error").text('<spring:message code="Advance_Date_Error_Msg" />');
-		              $("label#search_order_error").show();
-		              return false;
-	              } else{
-	            	var order = "processed";
-	            	var blankStr = "";
-	            	searchText =programName;
-	    	        var oSettings = oTable1.fnSettings() ;
-		            oSettings.sAjaxSource = orderProcessedSearch;
-		            oTable1.fnDraw();
-		            $("#note").html("");
-		            $("label#search_order_error").text("");
-		            $("label#search_order_error").show();
-	            }
+        function contentFTPSearch(){
+         	searchText =($("#orderSearchTxt").val() == undefined || $("#orderSearchTxt").val() == '') ? '' : $("#orderSearchTxt").val().trim();;
+ 	        var oSettings = oTable1.fnSettings() ;
+	        oSettings.sAjaxSource = defaultFTPSearch;
+	        oTable1.fnDraw();
         }
         
         function unprocessOrderAdvanceSearch(){
@@ -519,7 +444,7 @@
 		                              <input type="hidden" name="orderTypeForAdvanceSearch" id="processedOrderForAdvanceSearch" value="processed" />
 		                         </div>
 		                         <div class="float-left">
-		                             <input id="order_submit_btn" class="ple-button-search" type="button" value=" " name="order_submit_btn" />
+		                             <input id="ftp_search_btn" class="ple-button-search" type="button" value=" " name="ftp_search_btn" />
 		                          </div> 
 		                     </form> 
 		                    </div>

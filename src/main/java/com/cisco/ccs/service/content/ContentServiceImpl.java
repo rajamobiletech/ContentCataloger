@@ -1,53 +1,62 @@
 package com.cisco.ccs.service.content;
 
 import java.io.File;
-
+import java.io.FilenameFilter;
 import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import javax.jws.WebMethod;
 import javax.jws.WebService;
 
-import org.apache.cxf.interceptor.InInterceptors;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-//import com.cisco.ccs.dao.OrderDao;
-import com.cisco.ccs.exception.CCSException;
+import com.cisco.ccs.model.FTPSearchCriteria;
+import com.cisco.ccs.model.SearchCriteria;
+import com.cisco.ccs.model.ftp.FTPMasterSorter;
 import com.cisco.ccs.model.ftp.FTPMaster;
 import com.cisco.ccs.util.CommonsUtil;
-
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 @Service(ContentService.BEAN_ID)
-@WebService(portName = "ContentServicePort", endpointInterface = "com.cisco.ple.service.content.ContentService")
-@InInterceptors(interceptors = { "com.cisco.ple.filter.ContentServiceFualtInterceptor" })
+@WebService(portName = "ContentServicePort", endpointInterface = "com.cisco.ccs.service.content.ContentService")
 public class ContentServiceImpl implements ContentService {
 
-//	@Autowired
-//	OrderDao orderDao;
-	
+	FTPMasterSorter ftpMasterSorter;   
 	@Override
 	@WebMethod(exclude = true)
-	public List<String> getAllFTPSources() throws CCSException {
-		List<String> ftpDataList = null;
-		try {
-			final File folder = new File("/Users/rajad/Desktop/ftp-docs");
-			listFilesForFolder(folder);
-			//ftpDataList = orderDao.getAllOrderSources();
-		} catch (Exception exception) {
-			throw new CCSException(exception);
-		}
-		return ftpDataList;
+	public int getDefaultCount(String user, File folder, FTPSearchCriteria ftpSearchCriteria) {
+		return noOfFilesInFolder(folder, ftpSearchCriteria);
 	}
 	
-	public List<FTPMaster> listFilesForFolder(final File folder) {
-		List<FTPMaster> ftpList = new ArrayList<FTPMaster>();
+	public int noOfFilesInFolder(final File folder, FTPSearchCriteria ftpSearchCriteria) {
+		int count = 0;
 	    for (final File fileEntry : folder.listFiles()) {
+	        	String fileName = fileEntry.getName();
+	        	if(fileName.equals(".DS_Store"))
+	        		 continue;
+	        	String searchFileName = ftpSearchCriteria.getFileName();
+	        	if(!searchFileName.equals("")) {
+	        		if(Pattern.compile(Pattern.quote(searchFileName), Pattern.CASE_INSENSITIVE).matcher(fileEntry.getName()).find()) count++;
+	 	        }else count++;
+	    }
+	    return count;
+	}
+
+	
+	private List<FTPMaster> listFilesForFolder(final File folder,  final FTPSearchCriteria ftpSearchCriteria) {
+		List<FTPMaster> ftpList = new ArrayList<FTPMaster>();
+		
+		File[] FileList = folder.listFiles();
+		
+		if(FileList != null) {
+			for (final File fileEntry : FileList) {
 	    		String mFileName  = "";
 	    		String mFileType  = "";
 	    		Date mLastModified;
@@ -66,15 +75,50 @@ public class ContentServiceImpl implements ContentService {
 				mFileSizeMB = Double.valueOf(df.format(mFileSizeMB));	            
 	            
 	            mLastModified = new Date(fileEntry.lastModified());
-	            ftpList.add(new FTPMaster(mFileName, mFileType, mFileSizeMB, mLastModified));
-	    }
-	    return ftpList;
+	            String searchFileName = ftpSearchCriteria.getFileName();
+	            if(!searchFileName.equals("")) {
+	            if(Pattern.compile(Pattern.quote(searchFileName), Pattern.CASE_INSENSITIVE).matcher(fileEntry.getName()).find()) 
+	            	ftpList.add(new FTPMaster(mFileName, mFileType, mFileSizeMB, mLastModified));
+	            }else ftpList.add(new FTPMaster(mFileName, mFileType, mFileSizeMB, mLastModified));
+			}
+		}else return null;
+	    
+	    return filterBySearchCriteria(ftpList, ftpSearchCriteria);
 	}
 
-    public List<FTPMaster> getFTPList(String userId) {
+	private List<FTPMaster> filterBySearchCriteria(List<FTPMaster> ftpList, FTPSearchCriteria ftpSearchCriteria) {
+		ftpMasterSorter = new FTPMasterSorter(ftpList);
+		List<FTPMaster> filteredFTPList = new ArrayList<FTPMaster>();
+		switch (ftpSearchCriteria.getiSortCol()) {
+		case 1:
+			if(ftpSearchCriteria.getsSortDir().equals("asc")) ftpList = ftpMasterSorter.getASCSortedFTPListByName();
+			else ftpList = ftpMasterSorter.getDESCSortedFTPListByName();
+			break;
+		case 2:
+			if(ftpSearchCriteria.getsSortDir().equals("asc")) ftpList = ftpMasterSorter.getASCSortedFTPListByType();
+			else ftpList = ftpMasterSorter.getDESCSortedFTPListByType();
+			break;
+		case 3:
+			if(ftpSearchCriteria.getsSortDir().equals("asc")) ftpList = ftpMasterSorter.getASCSortedFTPListBySize();
+			else ftpList = ftpMasterSorter.getDESCSortedFTPListBySize();
+			break;
+		case 4:
+			if(ftpSearchCriteria.getsSortDir().equals("asc")) ftpList = ftpMasterSorter.getASCSortedFTPListByLastModifiedDate();
+			else ftpList = ftpMasterSorter.getDESCSortedFTPListByLastModifiedDate();
+			break;
+		default:
+			break;
+		}
+		int lastRecord = (ftpSearchCriteria.getiDisplayStart()+ftpSearchCriteria.getiDisplayLength()) < ftpSearchCriteria.getTotalRecords() ? (ftpSearchCriteria.getiDisplayStart()+ftpSearchCriteria.getiDisplayLength()) : ftpSearchCriteria.getTotalRecords();
+		for(int i = ftpSearchCriteria.getiDisplayStart(); i < lastRecord; i++)
+			filteredFTPList.add(ftpList.get(i));
+		return filteredFTPList;
+		
+	}
+	
+    public List<FTPMaster> getFTPList(String userId, File folder, FTPSearchCriteria FTPSearchCriteria) {
     	List<FTPMaster> ftpDataList = null;
-			final File folder = new File("/Users/rajad/Desktop/ftp-docs");
-			ftpDataList = listFilesForFolder(folder);
+			ftpDataList = listFilesForFolder(folder, FTPSearchCriteria);
 		return ftpDataList;
     }
     
@@ -95,12 +139,7 @@ public class ContentServiceImpl implements ContentService {
 			}
 			jsonDataArray.add(object);
 		}
-
 		dataObject.put("aaData", jsonDataArray);
-		dataObject.put("iTotalRecords", ftpList.size());
-		dataObject.put("iTotalDisplayRecords", ftpList.size());
-		dataObject.put("sEcho", 10);
-
 		return dataObject;
 	}
 

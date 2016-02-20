@@ -1,5 +1,6 @@
 package com.cisco.ccs.controller.cataloger;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.List;
 
@@ -11,7 +12,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.SessionAttributes;
 
 import com.cisco.ccs.service.content.ContentService;
@@ -20,13 +20,14 @@ import net.sf.json.JSONObject;
 
 import com.cisco.ccs.model.ftp.FTPMaster;
 import com.cisco.ccs.service.toc.TOCGenerateService;
-import com.cisco.ccs.util.CCSConstantUtil;
-import com.cisco.ccs.util.CCSControlerConstants;
+import com.cisco.ccs.constants.CCSConstantUtil;
+import com.cisco.ccs.controller.CCSBaseController;
+import com.cisco.ccs.model.FTPSearchCriteria;
 
 @Controller(value = "contentCatalogerController")
 @RequestMapping(value = { "/", "/ccs" })
 @SessionAttributes(types = ContentCatalogerController.class)
-public class ContentCatalogerController {
+public class ContentCatalogerController extends CCSBaseController {
 	
     @Autowired
     @Qualifier("contentService")
@@ -44,22 +45,27 @@ public class ContentCatalogerController {
 	@RequestMapping(value = "/getDefaultFTPSearch")
     public void geDefaultOrderSearch(ModelMap modelMap, HttpServletRequest request, HttpServletResponse response) {
 
+		final File folder = new File("/Users/rajad/Desktop/ftp-docs");
         String userId = request.getRemoteUser();
         List<FTPMaster> ftpList = null;
         response.setContentType(CCSConstantUtil.CONTENT_TYPE_APPLICATION_JSON);
 
-        	ftpList = contentService.getFTPList(userId);	
-            modelMap.addAttribute("searchOrderResults", contentService.getFTPListAsJSON(ftpList).toString());        
-            JSONObject dataObject = contentService.getFTPListAsJSON(ftpList);
-            try {
-                dataObject.put(CCSControlerConstants.SEARCH_DRAW_COUNT, 1);
-                dataObject.put(CCSControlerConstants.SEARCH_TOTAL_DISPLAY_RECORDS, 2);
-                dataObject.put(CCSControlerConstants.SEARCH_TOTAL_RECORDS, 2);
-                response.setCharacterEncoding("UTF-8");
-				response.getWriter().write(contentService.getFTPListAsJSON(ftpList).toString());
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
+        FTPSearchCriteria ftpSearchCriteria = new FTPSearchCriteria();
+        ftpSearchCriteria = setFTPSearchCriteria(request, ftpSearchCriteria);
+        ftpSearchCriteria = (FTPSearchCriteria) initSearchCriteriaBean(ftpSearchCriteria, request);
+        ftpSearchCriteria.setDefaultSearch(true);
+        response.setContentType(CCSConstantUtil.CONTENT_TYPE_APPLICATION_JSON);
+        ftpSearchCriteria.setTotalRecords(contentService.getDefaultCount(userId, folder, ftpSearchCriteria));
+    	ftpList = contentService.getFTPList(userId, folder, ftpSearchCriteria);	
+        modelMap.addAttribute("searchOrderResults", contentService.getFTPListAsJSON(ftpList).toString());        
+        JSONObject dataObject = contentService.getFTPListAsJSON(ftpList);
+        try {
+            modelMap.addAttribute("searchOrderResults", dataObject.toString());
+            writeSearchResultToResponse(dataObject, response, ftpSearchCriteria);
+    
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
     }
     
     @RequestMapping(value = "/checksumForm")
@@ -70,6 +76,12 @@ public class ContentCatalogerController {
     	String[] fileNames = selectedFTPName.split("\\|");
     	tocGenerateService.getFTPInfoAsJSON("/Users/rajad/Desktop/", "ftp-docs/", "/META-INF/container.xml", "sharedepubs/catalog/", fileNames[1], "epub");
         return "checksumform";
+    }
+    
+    public FTPSearchCriteria setFTPSearchCriteria(HttpServletRequest request, FTPSearchCriteria searchCriteria) {
+        String fileName = request.getParameter("fileName");
+        searchCriteria.setFileName(fileName);
+        return searchCriteria;
     }
 
 }

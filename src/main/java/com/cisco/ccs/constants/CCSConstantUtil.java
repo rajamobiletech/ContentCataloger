@@ -1,4 +1,4 @@
-package com.cisco.ccs.util;
+package com.cisco.ccs.constants;
 
 public interface CCSConstantUtil {
 
