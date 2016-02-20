@@ -89,7 +89,7 @@
 	                               .replace(/>/g, '&gt;');
 	                    
 	                           },
-	                           "aTargets": [1,2,3,4,5]
+	                           "aTargets": [1,2,3]
 	                         }
 	                       ],
 		    "aoColumns": [{ "bSortable": false,"sDefaultContent": detailImg },

@@ -97,6 +97,9 @@ public class ContentServiceImpl implements ContentService {
 		}
 
 		dataObject.put("aaData", jsonDataArray);
+		dataObject.put("iTotalRecords", ftpList.size());
+		dataObject.put("iTotalDisplayRecords", ftpList.size());
+		dataObject.put("sEcho", 10);
 
 		return dataObject;
 	}
