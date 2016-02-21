@@ -6,6 +6,9 @@
 <core:set var="contextPath" value="${pageContext.servletContext.contextPath}"/>
 <core:set var="checksum" value="${contextPath}/ccs/checksumForm"></core:set> 
 <core:set var="advOrderSearch" value="${contextPath}/ccs/ftpSearch"></core:set>
+
+<script type="text/javascript" src="${contextPath}/resources/js/jquery.blockUI.js"></script>
+	
 <style>
 .ui-widget-content
 {
@@ -220,6 +223,17 @@
 
 		$("#btnSaveObject").click(function() {
 			if(selectedFtpID) {
+				 $.blockUI({ 
+					  message: "Request in progress, Please wait..!!",
+					  css: { 
+				            border: 'none', 
+				            padding: '15px', 
+				            backgroundColor: '#000', 
+				            '-webkit-border-radius': '10px', 
+				            '-moz-border-radius': '10px', 
+				            opacity: .5, 
+				            color: '#fff' 
+				        } })
 				$("#selectedFTPHiddenInputId").val(selectedFtpID);
 				$("#checksumFormId").submit();
 			}else {

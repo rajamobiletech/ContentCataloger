@@ -39,7 +39,7 @@ public class ContentServiceImpl implements ContentService {
 		int count = 0;
 	    for (final File fileEntry : folder.listFiles()) {
 	        	String fileName = fileEntry.getName();
-	        	if(fileName.equals(".DS_Store"))
+	        	if(fileName.equals(".DS_Store") || !fileName.endsWith(".epub"))
 	        		 continue;
 	        	String searchFileName = ftpSearchCriteria.getFileName();
 	        	if(!searchFileName.equals("")) {
@@ -61,7 +61,7 @@ public class ContentServiceImpl implements ContentService {
 	    		String mFileType  = "";
 	    		Date mLastModified;
 	        	String fileName = fileEntry.getName();
-	        	if(fileName.equals(".DS_Store"))
+	        	if(fileName.equals(".DS_Store")  || !fileName.endsWith(".epub"))
 	        		 continue;
 	        	int i = fileName.lastIndexOf('.');
 	            if (i > 0) {
@@ -107,6 +107,7 @@ public class ContentServiceImpl implements ContentService {
 			else ftpList = ftpMasterSorter.getDESCSortedFTPListByLastModifiedDate();
 			break;
 		default:
+			ftpList = ftpMasterSorter.getASCSortedFTPListByName();
 			break;
 		}
 		int lastRecord = (ftpSearchCriteria.getiDisplayStart()+ftpSearchCriteria.getiDisplayLength()) < ftpSearchCriteria.getTotalRecords() ? (ftpSearchCriteria.getiDisplayStart()+ftpSearchCriteria.getiDisplayLength()) : ftpSearchCriteria.getTotalRecords();

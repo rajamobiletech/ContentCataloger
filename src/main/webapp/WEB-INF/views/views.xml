@@ -17,9 +17,14 @@
 		<put-attribute name="bodyContent" value="/WEB-INF/views/contentlist/contentlist.jsp" />
 	</definition>
 	
-		<definition name="checksumform" extends="admin_template">
+	<definition name="checksumform" extends="admin_template">
 		<put-attribute name="menu" value="/WEB-INF/views/templates/menu.jsp" />
 		<put-attribute name="bodyContent" value="/WEB-INF/views/checksum/checksum.jsp" />
+	</definition>
+
+	<definition name="catalogoptionform" extends="admin_template">
+		<put-attribute name="menu" value="/WEB-INF/views/templates/menu.jsp" />
+		<put-attribute name="bodyContent" value="/WEB-INF/views/OptionCatalog/catalogeroptionform.jsp" />
 	</definition>
 
 </tiles-definitions>

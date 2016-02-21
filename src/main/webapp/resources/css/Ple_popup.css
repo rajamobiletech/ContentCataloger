@@ -1,0 +1,192 @@
+@font-face {
+    font-family: 'Segoe';
+    src: url('segoeui-webfont.eot') format('eot'), url('segoeui-webfont.woff') format('woff'), url('SEGOEUI.TTF') format('truetype');
+}
+
+.ple-popup {
+	border-radius: 6px 6px 6px 6px;
+    background-color: #FFFFFF;
+    float: left;
+    /*margin-left: 290px;*/
+    margin-right: 290px;
+    padding: 3px; /* width: 55%;*/
+    width: 663px;
+}
+
+.ple-popup-header {
+    height: 39px;
+    width: 100%;
+}
+
+.ple-popup-header-inner-wrapper {
+	border-top-left-radius: 6px;
+    border-top-right-radius: 6px;
+    background: url("../images/popup_blue_heading bg_middle.png") repeat-x scroll 0 0 transparent;
+    color: #FFFFFF;
+    display: block;
+    float: left;
+    height: 39px;
+    padding-left: 7px;
+    width: 656px;
+    font-family: Segoe;
+    font-size: 15px;
+    line-height: 35px; /*equal to the height of the button*/
+/*text-shadow: 1px 1px #406C81;*/
+}
+
+.ple-popup-radio-admin-type {
+    background-color: #F4F4F4;
+    border-bottom: 1px solid #D9DCDE;
+    color: #56585A;
+    margin-bottom: 5px;
+    padding: 15px;
+}
+
+.ple-popup-radio-admin-type span {
+    color: #005d84;
+    font-weight: bold;
+}
+
+.ple-popup-container {
+    float: left;
+    width: 95%;
+    padding-left: 10px;
+}
+/*
+.ple-popup-parent-learning-partner {
+    background-image: url("../images/arrow_left.png");
+}
+
+.ple-popup-delivery-learning-partner {
+    background-image: url("../images/arrow_down.png");
+}
+*/
+.ple-popup-parent-learning-partner, .ple-popup-delivery-learning-partner {
+    background-image: url("../images/arrow_left.png");
+    background-position: 15px center;
+    background-repeat: no-repeat;
+    float: left;
+    line-height: 24px;
+    margin-right: 10px;
+    padding-left: 30px;
+    font-family: Arial, Helvetica, sans-serif;
+    color: #666666;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.ple-popup-learning-partner {
+    background: url("../images/popup_grey_heading bg.png") repeat-x scroll 0 0 transparent;
+    float: left;
+    height: 26px;
+    line-height: 26px;
+    margin: 5px 0;
+    width: 100%;
+}
+
+.ple-popup-buttons-wrapper {
+    text-align: center;
+}
+
+.ple-popup-buttons {
+    /*margin-left: 200px !important;
+    margin-top: 20px !important;*/
+	margin-bottom: 20px !important;
+}
+
+.ple-popup-grid-wrapper {
+    width: 629px !important;
+}
+
+.ple-popup-mainContent-wrapper {
+    margin: 10px;
+    width: auto !important;
+}
+
+.ple-popup-mainContent-wrapper {
+    background-color: #FFFFFF;
+    float: left;
+    width: 990px;
+}
+
+.ple-popup-advancedSearch-row-wrapper {
+    width: 610px !important;
+}
+
+.ple-popup-search-changeStatus-wrapper {
+    width: 629px !important;
+}
+
+.ple-popup-form-wrapper {
+    width: 100%!important;
+}
+
+.ple-popup-form-row-wrapper {
+    width: 100%!important;
+}
+
+.ple-button-popup-close{
+    background-color: transparent;
+    background-image: url("../images/popup_close_icon.png");
+    background-position: left top;
+    background-repeat: no-repeat;
+    border: medium none;
+    cursor: pointer;
+    height: 27px;
+    margin-left: 310px;
+    width: 26px;
+}
+
+.ple-popup-buttons {
+	float: left;
+    height: 30px;
+    margin-left: 90px;
+    margin-top: 20px;
+    padding-bottom: 5px;
+    width: auto;
+}
+
+.ple-popup-form-row-wrapper .ple-popup-form-label {
+   float: left;
+    font-size: 11px;
+    margin-right: 0px;
+    width: 100px;
+    font-weight: bold;
+}
+
+
+.ple-popup-form-row-wrapper .ple-popup-form-field {
+    color: #545454;
+    float: left;
+    font-size: 11px;
+    width: 250px;
+}
+
+
+.ple-popup-form-rowDisplay-wrapper {
+    margin: 10px 0;
+}
+
+.ple-popup-form-row-wrapper {
+    float: left;
+    /*margin-bottom: 15px;*/
+    width: 990px;
+}
+/***
+*** New Content
+***/
+.ple-popup-small{
+    width: 438px;
+}
+
+.ple-popup-small .ple-popup-header-inner-wrapper {
+    width: 431px;
+}
+
+.ple-popup-small .ple-popup-buttons {
+    /*margin-left: 100px !important;*/
+}
+
+.ple-popup-form-row-seperator{
+ border-bottom: 1px solid #cdcdcd ;
+}

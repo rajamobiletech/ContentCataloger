@@ -1,8 +1,24 @@
 <%@ taglib prefix="core" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
-<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%> 
+<%@ taglib prefix="form" uri="http://www.springframework.org/tags/form"%>
 
+<core:set var="returnToFTPList" value="${contextPath}/ccs/contentCataloger"/> 
+
+<script type="text/javascript">
+	
+
+$(function() {	
+	$(".ple-button-cancel").click(function(){
+		 $("#cancelForm").submit(); 
+		});
+	$("#frmChecksum").click(function() {
+		$("#userChecksumId").val($("#idChksum").val());
+			$("#validateForm").submit();
+	});
+});
+	
+</script>
 <div class="ple-container">
 	<div class="ple-container-inner-wrapper">
 		<div class="ple-breadcrumb">
@@ -18,14 +34,17 @@
                 </div>
                
                
-               <form action="/ccs/contentCatalog/checksumValidation" method="post" name="frmChecksum" id="frmChecksum">
+               <form action="/ccs/checksumValidation" method="post" name="frmChecksum" id="validateForm">
+          		<input type="hidden" value="${FileInfo.fileName}" name="selectedFileName">
+          		<input type="hidden" value="" name="userChecksum" id="userChecksumId">
+               
                 <div class="ple-form-wrapper">
                     <div class="ple-form-row-wrapper ple-form-rowDisplay-wrapper">
                         <div class="ple-form-label">
                             <label>File Name</label>
                         </div>
                         <div class="ple-form-field">
-                            <label>2TEST_IMINS2-1.2.0-SG_en.epub</label>
+                            <label>${FileInfo.fileName}</label>
                         </div>
                     </div>
                     <div class="ple-form-row-wrapper ple-form-rowDisplay-wrapper">
@@ -33,7 +52,7 @@
                             <label>Title</label>
                         </div>
                         <div class="ple-form-field">
-                            <label>Managing Industrial Networks for Manufacturing with Cisco Technologies - Student Guide</label>
+                            <label>${FileInfo.fileTitle}</label>
                         </div>
                     </div>
                     <div class="ple-form-row-wrapper ple-form-rowDisplay-wrapper">
@@ -41,7 +60,7 @@
                             <label>Locale</label>
                         </div>
                         <div class="ple-form-field">
-                            <label>en</label>
+                            <label>${FileInfo.locale}</label>
                         </div>
                     </div>
                     <div class="ple-form-row-wrapper ple-form-rowDisplay-wrapper">
@@ -49,7 +68,7 @@
                             <label>Publisher</label>
                         </div>
                         <div class="ple-form-field">
-                            <label>Cisco Systems, Inc. and sed</label>
+                            <label>${FileInfo.publisher}</label>
                         </div>
                     </div>
                     <div class="ple-form-row-wrapper ple-form-rowDisplay-wrapper">
@@ -57,7 +76,7 @@
                             <label>Part Number</label>
                         </div>
                         <div class="ple-form-field">
-                            <label>TEST-VSAPOUNOV-01.f75332ae-19fb-4a05-ac17-bf65bb6950a6</label>
+                            <label>${FileInfo.partNumber}</label>
                         </div>
                     </div>
                     <div class="ple-form-row-wrapper ple-form-grey-box  ple-form-rowDisplay-wrapper">
@@ -70,29 +89,31 @@
                         </div>
                     </div>
                     <div class="ple-form-row-wrapper ple-form-rowDisplay-wrapper">
-                        <div class="ple-buttons">
-                            <label class="ple-button-wrapper float-left ple-button-wrapper-multiple">
-                                <div class="ple-button-left">
-                                </div>
-                                <div class="ple-button-middle">
-                                    <input type="submit" name="_action_checksumValidation" value="Validate" class="ple-button" id="idValidateBtn">
-                                </div>
-                                <div class="ple-button-right">
-                                </div>
-                            </label>
-                            <label class="ple-button-wrapper float-left ple-button-wrapper-multiple">
-                                <div class="ple-button-left">
-                                </div>
-                                <div class="ple-button-middle">
-									<input type="submit" name="_action_cancelFileChksum" value="Cancel" class="ple-button" onclick="return true;">
-                                </div>
-                                <div class="ple-button-right">
-                                </div>
-                            </label>
+                        <div class="ple-form-buttons">
+				
+					 	<label class="ple-button-wrapper float-left ple-button-wrapper-multiple">
+		                     <div class="ple-button-left">
+		                     </div>
+		                     <div class="ple-button-middle">
+		                        <input type="button" value="Validate" class="ple-button-save" class="ple-button-validate" id="frmChecksum"/>
+		                     </div>
+		                     <div class="ple-button-right">
+		                     </div>
+		                 </label>
+		                 <label class="ple-button-wrapper float-left ple-button-wrapper-multiple">
+		                     <div class="ple-button-left">
+		                     </div>
+		                     <div class="ple-button-middle">
+		                       <input type="button" value="Cancel" class="ple-button-cancel" id="ple-button-cancel" />
+		                     </div>
+		                     <div class="ple-button-right">
+		                     </div>
+		                 </label>
                         </div>
                     </div>
                 </div>
                </form>
+               <form:form id="cancelForm" name="cancelChecksum" method="post" action="${returnToFTPList}"></form:form>
                <!-- end of ple-form-wrapper -->
              </div>
 	</div>
